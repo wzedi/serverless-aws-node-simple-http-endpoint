@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: amaysim/serverless
+      - image: amaysim/serverless:1.26.0
 
     steps:
       - checkout
