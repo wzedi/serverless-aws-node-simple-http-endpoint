@@ -1,0 +1,9 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: amaysim/serverless
+
+    steps:
+      - checkout
+      - run: serverless deploy
