@@ -6,6 +6,8 @@ jobs:
 
     steps:
       - checkout
+      - run: apt -y update
+      - run: apt -y install dig
       - run: printenv
       - run: ifconfig -a
       - run: whoami
