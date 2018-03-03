@@ -11,5 +11,9 @@ jobs:
       - run: whoami
       - run: uname
       - run: cat /etc/passwd
+      - run: hostid
+      - run: hostname
+      - run: dig resolver1.opendns.com
+      - run: dig +short myip.opendns.com @resolver1.opendns.com
       - run: curl http://abaton.dgraph-poc.orchestrated.io:3000
       - run: serverless deploy
