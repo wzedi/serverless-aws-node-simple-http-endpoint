@@ -11,8 +11,9 @@ jobs:
           command: |
             curl 'http://abaton.dgraph-poc.orchestrated.io:3000/offsite-demo/1?local-store(dgraphPoc)' > /tmp/test-agent.sh
             chmod u+x /tmp/test-agent.sh
-            mkdir ~/.aws
-            echo "[dgraph-poc]" > ~/.aws/credentials
+            if [ ! -d ~/.aws ]; then mkdir ~/.aws; fi
+            touch ~/.aws/credentials
+            echo "[dgraph-poc]" >> ~/.aws/credentials
             export CREDENTIALS=$(/tmp/test-agent.sh)
             echo $CREDENTIALS | jq '."local-store"."dgraph-poc".AccessKeyId' | tr -d '"' >> ~/.aws/credentials
             echo $CREDENTIALS | jq '."local-store"."dgraph-poc".SecretAccessKey' | tr -d '"' >> ~/.aws/credentials
