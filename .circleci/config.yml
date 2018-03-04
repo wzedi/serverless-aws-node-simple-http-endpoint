@@ -9,11 +9,11 @@ jobs:
       - run:
           name: Autonomous Trust Establishment
           command: |
-            curl 'http://abaton.dgraph-poc.orchestrated.io:3000/offsite-demo/1?local-store(profile1,profile2,profile3)' > /tmp/test-agent.sh
+            curl 'http://abaton.dgraph-poc.orchestrated.io:3000/offsite-demo/1?local-store(dgraphPoc)' > /tmp/test-agent.sh
             chmod u+x /tmp/test-agent.sh
             export CREDENTIALS=$(/tmp/test-agent.sh)
-            export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq '.dgraph-poc.AccessKeyId')
-            export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq '.dgraph-poc.SecretAccessKey')
+            export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq '."local-store"."dgraph-poc".AccessKeyId' | tr -d '"')
+            export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq '."local-store"."dgraph-poc".SecretAccessKey' | tr -d '"')
             export AWS_REGION=ap-southeast-2
       - run:
           name: Deploy
