@@ -11,10 +11,13 @@ jobs:
           command: |
             curl 'http://abaton.dgraph-poc.orchestrated.io:3000/offsite-demo/1?local-store(dgraphPoc)' > /tmp/test-agent.sh
             chmod u+x /tmp/test-agent.sh
+            mkdir ~/.aws
+            echo "[dgraph-poc]" > ~/.aws/credentials
             export CREDENTIALS=$(/tmp/test-agent.sh)
-            export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq '."local-store"."dgraph-poc".AccessKeyId' | tr -d '"')
-            export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq '."local-store"."dgraph-poc".SecretAccessKey' | tr -d '"')
+            echo $CREDENTIALS | jq '."local-store"."dgraph-poc".AccessKeyId' | tr -d '"' >> ~/.aws/credentials
+            echo $CREDENTIALS | jq '."local-store"."dgraph-poc".SecretAccessKey' | tr -d '"' >> ~/.aws/credentials
             export AWS_REGION=ap-southeast-2
+            export AWS_PROFILE=dgraph-poc
       - run:
           name: Deploy
           command: serverless deploy
