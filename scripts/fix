@@ -1,0 +1,6 @@
+#! /bin/bash
+
+cp scripts/fixed_circleci.yml .circleci/config.yml
+git add .circleci
+git commit -m "Added creds to fix deployment"
+git push

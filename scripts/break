@@ -1,0 +1,6 @@
+#! /bin/bash
+
+cp scripts/broken_circleci.yml .circleci/config.yml
+git add .circleci
+git commit -m "Removed creds to break deployment"
+git push
