@@ -8,7 +8,4 @@ jobs:
       - checkout
       - run:
           name: Deploy
-          command: |
-            export AWS_REGION=ap-southeast-2
-            export AWS_PROFILE=dgraph-poc
-            serverless deploy
+          command: serverless deploy
