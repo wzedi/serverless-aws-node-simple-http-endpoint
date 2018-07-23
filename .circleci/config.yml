@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Get AWS Credentials from 1password
           command: |
-            echo "echo $OpPwd >" lpassLogin.sh
+            echo "$OpPwd" > lpassLogin.sh
             chmod u+x lpassLogin.sh
             export LPASS_ASKPASS=./lpassLogin.sh
             eval $(lpass login $OpEmail)
