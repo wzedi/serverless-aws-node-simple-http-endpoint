@@ -7,13 +7,18 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Get Credentials
+          name: Install 1password CLI
           command: |
-            curl 'http://abaton.dgraph-poc.orchestrated.io:3000/offsite-demo/1?local-store(dgraph-poc)' > /tmp/test-agent.sh
-            chmod u+x /tmp/test-agent.sh
-            export CREDENTIALS=$(/tmp/test-agent.sh)
-            AWS_ACCESS_KEY=$(echo $CREDENTIALS | jq '."local-store"."dgraph-poc".AccessKeyId' | tr -d '"')
-            AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq '."local-store"."dgraph-poc".SecretAccessKey' | tr -d '"')
+            curl -O https://cache.agilebits.com/dist/1P/op/pkg/v0.5/op_linux_386_v0.5.zip
+            unzip op_linux_386_v0.5.zip
+            echo "1password CLI Version: " $(./op --version)
+      - run:
+          name: Get AWS Credentials from 1password
+          command: |
+            eval $(echo $OpPw | ./op signin $OpAddress $OpEmail $OpKey)
+            export CREDENTIALS=./op get item $OpItemUuid
+            AWS_ACCESS_KEY=$(echo $CREDENTIALS | jq '.details.fields[] | select(.designation=="username").value' | tr -d '"')
+            AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq '.details.fields[] | select(.designation=="password").value' | tr -d '"')
             serverless config credentials --provider aws --key $AWS_ACCESS_KEY --secret $AWS_SECRET_ACCESS_KEY --profile dgraph-poc
       - run:
           name: Deploy
