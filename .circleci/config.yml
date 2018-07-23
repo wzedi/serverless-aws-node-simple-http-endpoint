@@ -9,7 +9,7 @@ jobs:
       - run:
           name: Install LastPass CLI
           command: |
-            apk -no-cache add \
+            apk --no-cache add \
               cmake
               curl \
               curl-dev  \
