@@ -9,19 +9,19 @@ jobs:
       - run:
           name: Install LastPass CLI
           command: |
-	    apt-get --no-install-recommends -yqq install \
-	      bash-completion \
-	      build-essential \
-	      cmake \
-	      libcurl3  \
-	      libcurl3-openssl-dev  \
-	      libssl1.0 \
-	      libssl1.0-dev \
-	      libxml2 \
-	      libxml2-dev  \
-	      pkg-config \
-	      ca-certificates \
-	      xclip
+            apt-get --no-install-recommends -yqq install \
+              bash-completion \
+              build-essential \
+              cmake \
+              libcurl3  \
+              libcurl3-openssl-dev  \
+              libssl1.0 \
+              libssl1.0-dev \
+              libxml2 \
+              libxml2-dev  \
+              pkg-config \
+              ca-certificates \
+              xclip
             mkdir lpass
             cd lpass
             curl https://github.com/lastpass/lastpass-cli/archive/master.zip > lpass.zip
