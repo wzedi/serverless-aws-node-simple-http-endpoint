@@ -7,18 +7,39 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install 1password CLI
+          name: Install LastPass CLI
           command: |
-            curl -O https://cache.agilebits.com/dist/1P/op/pkg/v0.5/op_linux_386_v0.5.zip
-            unzip op_linux_386_v0.5.zip
-            echo "1password CLI Version: " $(./op --version)
+	    apt-get --no-install-recommends -yqq install \
+	      bash-completion \
+	      build-essential \
+	      cmake \
+	      libcurl3  \
+	      libcurl3-openssl-dev  \
+	      libssl1.0 \
+	      libssl1.0-dev \
+	      libxml2 \
+	      libxml2-dev  \
+	      pkg-config \
+	      ca-certificates \
+	      xclip
+            mkdir lpass
+            cd lpass
+            curl https://github.com/lastpass/lastpass-cli/archive/master.zip > lpass.zip
+            unzip lpass.zip
+            make
+            make install
+            echo "LastPass CLI Version: " $(lpass --version)
       - run:
           name: Get AWS Credentials from 1password
           command: |
-            eval $(echo $OpPw | ./op signin $OpAddress $OpEmail $OpKey)
-            export CREDENTIALS=$(./op get item $OpItemUuid)
-            AWS_ACCESS_KEY=$(echo $CREDENTIALS | jq '.details.fields[] | select(.designation=="username").value' | tr -d '"')
-            AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq '.details.fields[] | select(.designation=="password").value' | tr -d '"')
+            echo "echo $OpPwd >" lpassLogin.sh
+            chmox u+x lpassLogin.sh
+            export LPASS_ASKPASS=./lpassLogin.sh
+            eval $(lpass login $OpEmail)
+            rm lpassLogin.sh
+            export CREDENTIALS=$(lpass show "Orchestrated POC account")
+            AWS_ACCESS_KEY=$(echo $CREDENTIALS | grep Username | cut -d ' ' -f 2)
+            AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | grep Password | cut -d ' ' -f 2)
             serverless config credentials --provider aws --key $AWS_ACCESS_KEY --secret $AWS_SECRET_ACCESS_KEY --profile dgraph-poc
       - run:
           name: Deploy
