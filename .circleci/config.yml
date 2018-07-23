@@ -31,7 +31,7 @@ jobs:
             echo "$OpPwd" > lpassLogin.sh
             chmod u+x lpassLogin.sh
             export LPASS_ASKPASS=./lpassLogin.sh
-            eval $(lpass login $OpEmail)
+            lpass login $OpEmail
             rm lpassLogin.sh
             export CREDENTIALS=$(lpass show "Orchestrated POC account")
             AWS_ACCESS_KEY=$(echo $CREDENTIALS | grep Username | cut -d ' ' -f 2)
