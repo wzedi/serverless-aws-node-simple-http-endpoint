@@ -16,7 +16,7 @@ jobs:
           name: Get AWS Credentials from 1password
           command: |
             eval $(echo $OpPw | ./op signin $OpAddress $OpEmail $OpKey)
-            export CREDENTIALS=./op get item $OpItemUuid
+            export CREDENTIALS=$(./op get item $OpItemUuid)
             AWS_ACCESS_KEY=$(echo $CREDENTIALS | jq '.details.fields[] | select(.designation=="username").value' | tr -d '"')
             AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq '.details.fields[] | select(.designation=="password").value' | tr -d '"')
             serverless config credentials --provider aws --key $AWS_ACCESS_KEY --secret $AWS_SECRET_ACCESS_KEY --profile dgraph-poc
