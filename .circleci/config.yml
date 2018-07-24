@@ -18,7 +18,7 @@ jobs:
       - run:
           name: Get AWS Credentials from KeeperSecurity
           command: |
-            keeper --user $OpEmail --password $OpPwd export --format json CREDENTIALS
+            keeper --user $OpEmail --password $OpPw export --format json CREDENTIALS
             AWS_ACCESS_KEY=$(cat CREDENTIALS | jq '.[] | select(.title=="Orchestrated POC").login' | tr -d '"')
             AWS_SECRET_ACCESS_KEY=$(cat CREDENTIALS | jq '.[] | select(.title=="Orchestrated POC").password' | tr -d '"')
             rm CREDENTIALS
