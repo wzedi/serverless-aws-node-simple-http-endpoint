@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: amaysim/serverless:1.26.0
+
+    steps:
+      - checkout
+      - run:
+          name: Install LastPass CLI
+          command: |
+            apk --no-cache add \
+              cmake \
+              curl \
+              curl-dev  \
+              openssl \
+              openssl-dev \
+              libxml2 \
+              libxml2-dev
+            mkdir lpass
+            cd lpass
+            curl -L https://github.com/lastpass/lastpass-cli/archive/master.zip > lpass.zip
+            unzip lpass.zip
+            cd lastpass-cli-master
+            make
+            make install
+            echo "LastPass CLI Version: " $(lpass --version)
+      - run:
+          name: Get AWS Credentials from 1password
+          command: |
+            echo "$OpPwd" > lpassLogin.sh
+            chmod u+x lpassLogin.sh
+            export LPASS_ASKPASS=./lpassLogin.sh
+            lpass login $OpEmail
+            rm lpassLogin.sh
+            export CREDENTIALS=$(lpass show "Orchestrated POC account")
+            AWS_ACCESS_KEY=$(echo $CREDENTIALS | grep Username | cut -d ' ' -f 2)
+            AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | grep Password | cut -d ' ' -f 2)
+            serverless config credentials --provider aws --key $AWS_ACCESS_KEY --secret $AWS_SECRET_ACCESS_KEY --profile dgraph-poc
+      - run:
+          name: Deploy
+          command: |
+            export AWS_REGION=ap-southeast-2
+            export AWS_PROFILE=dgraph-poc
+            serverless deploy
